@@ -1,0 +1,36 @@
+{
+    "texto": "¿Es un animal?",
+    "es_hoja": false,
+    "nodo_si": {
+        "texto": "¿Ladra?",
+        "es_hoja": false,
+        "nodo_si": {
+            "texto": "un perro",
+            "es_hoja": true,
+            "nodo_si": null,
+            "nodo_no": null
+        },
+        "nodo_no": {
+            "texto": "un gato",
+            "es_hoja": true,
+            "nodo_si": null,
+            "nodo_no": null
+        }
+    },
+    "nodo_no": {
+        "texto": "¿Es natural?",
+        "es_hoja": false,
+        "nodo_si": {
+            "texto": "una manzana",
+            "es_hoja": true,
+            "nodo_si": null,
+            "nodo_no": null
+        },
+        "nodo_no": {
+            "texto": "un reloj",
+            "es_hoja": true,
+            "nodo_si": null,
+            "nodo_no": null
+        }
+    }
+}

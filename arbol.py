@@ -1,9 +1,56 @@
+import json
+import os
+
 class Nodo:
     def __init__(self, texto, es_hoja=False):
         self.texto = texto
         self.es_hoja = es_hoja
         self.nodo_si = None
         self.nodo_no = None
+
+# ==========================================
+# GESTIÓN DE MEMORIA (EXPORTAR/IMPORTAR)
+# ==========================================
+
+def nodo_a_diccionario(nodo):
+    """Convierte un Nodo (y todos sus hijos) en un diccionario de Python recursivamente."""
+    if nodo is None:
+        return None
+    
+    return {
+        "texto": nodo.texto,
+        "es_hoja": nodo.es_hoja,
+        "nodo_si": nodo_a_diccionario(nodo.nodo_si),
+        "nodo_no": nodo_a_diccionario(nodo.nodo_no)
+    }
+
+def diccionario_a_nodo(datos):
+    """Convierte un diccionario de Python de vuelta en un árbol de Nodos recursivamente."""
+    if datos is None:
+        return None
+    
+    nodo = Nodo(datos["texto"], datos["es_hoja"])
+    nodo.nodo_si = diccionario_a_nodo(datos["nodo_si"])
+    nodo.nodo_no = diccionario_a_nodo(datos["nodo_no"])
+    return nodo
+
+def guardar_conocimiento(raiz, archivo="cerebro.json"):
+    """Guarda el árbol completo en el disco duro."""
+    diccionario_arbol = nodo_a_diccionario(raiz)
+    with open(archivo, 'w', encoding='utf-8') as f:
+        json.dump(diccionario_arbol, f, ensure_ascii=False, indent=4)
+    print("Conocimiento guardado exitosamente. 💾")
+
+def cargar_conocimiento(archivo="cerebro.json"):
+    """Intenta cargar el árbol desde el disco duro. Si no existe, crea el árbol base."""
+    if os.path.exists(archivo):
+        with open(archivo, 'r', encoding='utf-8') as f:
+            datos = json.load(f)
+        print("He recuperado mis memorias de la sesión anterior. 🧠")
+        return diccionario_a_nodo(datos)
+    else:
+        print("Iniciando con memoria en blanco (Conocimiento Base). 👶")
+        return crear_arbol_inicial()
 
 def crear_arbol_inicial():
     nodo_perro = Nodo("un perro", es_hoja=True)
@@ -60,7 +107,8 @@ if __name__ == "__main__":
     print("--- BIENVENIDO AL ORÁCULO DE LAS 20 PREGUNTAS ---")
     print("Piensa en algo y yo intentaré adivinarlo.")
     
-    cerebro_raiz = crear_arbol_inicial()
+    # 1. Cargamos la memoria en lugar de crearla de cero
+    cerebro_raiz = cargar_conocimiento()
     
     while True:
         print("\n" + "="*40)
@@ -68,5 +116,7 @@ if __name__ == "__main__":
         
         jugar_de_nuevo = input("\n¿Quieres jugar otra vez? (s/n): ").lower().strip()
         if jugar_de_nuevo != 's':
-            print("¡Hasta la próxima! Guardaré mi conocimiento en mi memoria... (por ahora)")
+            # 2. Guardamos la memoria antes de cerrar
+            print("¡Hasta la próxima! Guardando mis memorias en el disco duro...")
+            guardar_conocimiento(cerebro_raiz)
             break
