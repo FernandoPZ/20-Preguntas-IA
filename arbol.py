@@ -8,10 +8,7 @@ class Nodo:
         self.nodo_si = None
         self.nodo_no = None
 
-# ==========================================
-# GESTIÓN DE MEMORIA (EXPORTAR/IMPORTAR)
-# ==========================================
-
+# GESTIÓN DE MEMORIA
 def nodo_a_diccionario(nodo):
     """Convierte un Nodo (y todos sus hijos) en un diccionario de Python recursivamente."""
     if nodo is None:
@@ -61,9 +58,7 @@ def crear_arbol_inicial():
     raiz.nodo_no = nodo_manzana
     return raiz
 
-# ==========================================
 # MOTOR DE LA INTELIGENCIA ARTIFICIAL
-# ==========================================
 def jugar(nodo_actual):
     # 1. Fase de Navegación: Bajamos por el árbol hasta llegar a una hoja
     while not nodo_actual.es_hoja:
