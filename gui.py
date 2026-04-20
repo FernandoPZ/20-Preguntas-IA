@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import arbol
+import motor_ia
 
 # Configuración visual base
 ctk.set_appearance_mode("Dark")
@@ -12,7 +12,7 @@ class OraculoApp(ctk.CTk):
         self.minsize(500, 400)
         
         # 1. Cargamos el cerebro arbol.py
-        self.cerebro_raiz = arbol.cargar_conocimiento()
+        self.cerebro_raiz = motor_ia.cargar_conocimiento()
         self.nodo_actual = self.cerebro_raiz
         
         # Variables temporales para cuando la IA aprende
@@ -114,14 +114,14 @@ class OraculoApp(ctk.CTk):
             
             # 2. Conectamos las hojas nuevas
             if respuesta == 's':
-                self.nodo_actual.nodo_si = arbol.Nodo(self.nuevo_elemento, es_hoja=True)
-                self.nodo_actual.nodo_no = arbol.Nodo(viejo_texto, es_hoja=True)
+                self.nodo_actual.nodo_si = motor_ia.Nodo(self.nuevo_elemento, es_hoja=True)
+                self.nodo_actual.nodo_no = motor_ia.Nodo(viejo_texto, es_hoja=True)
             else:
-                self.nodo_actual.nodo_no = arbol.Nodo(self.nuevo_elemento, es_hoja=True)
-                self.nodo_actual.nodo_si = arbol.Nodo(viejo_texto, es_hoja=True)
+                self.nodo_actual.nodo_no = motor_ia.Nodo(self.nuevo_elemento, es_hoja=True)
+                self.nodo_actual.nodo_si = motor_ia.Nodo(viejo_texto, es_hoja=True)
                 
             # 3. Usamos la función de arbol.py para guardar
-            arbol.guardar_conocimiento(self.cerebro_raiz)
+            motor_ia.guardar_conocimiento(self.cerebro_raiz)
             self.lbl_mensaje.configure(text="¡Gracias! He expandido mi conocimiento. 🧠✨\n(Memoria guardada en el disco)")
             self.fase = "fin"
             self.actualizar_pantalla()

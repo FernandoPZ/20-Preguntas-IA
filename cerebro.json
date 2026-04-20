@@ -1,16 +1,51 @@
 {
     "objetos": {
-        "un perro": { "animal": 1.0, "electricidad": -1.0, "agua": -1.0, "ruedas": -1.0, "comestible": -1.0 },
-        "una ballena": { "animal": 1.0, "electricidad": -1.0, "agua": 1.0, "ruedas": -1.0, "comestible": -1.0 },
-        "un automovil": { "animal": -1.0, "electricidad": -1.0, "agua": -1.0, "ruedas": 1.0, "comestible": -1.0 },
-        "un telefono": { "animal": -1.0, "electricidad": 1.0, "agua": -1.0, "ruedas": -1.0, "comestible": -1.0 },
-        "una manzana": { "animal": -1.0, "electricidad": -1.0, "agua": -1.0, "ruedas": -1.0, "comestible": 1.0 }
+        "un perro": {
+            "animal": 1.0,
+            "electricidad": -1.0,
+            "agua": -1.0,
+            "ruedas": -1.0,
+            "comestible": -1.0,
+            "preg_6": -1.0
+        },
+        "una ballena": {
+            "animal": 1.0,
+            "electricidad": -1.0,
+            "agua": 1.0,
+            "ruedas": -1.0,
+            "comestible": -1.0
+        },
+        "un automovil": {
+            "animal": -1.0,
+            "electricidad": -1.0,
+            "agua": -1.0,
+            "ruedas": 1.0,
+            "comestible": -1.0
+        },
+        "un telefono": {
+            "animal": -1.0,
+            "electricidad": 1.0,
+            "agua": -1.0,
+            "ruedas": -1.0,
+            "comestible": -1.0
+        },
+        "una manzana": {
+            "animal": -1.0,
+            "electricidad": -1.0,
+            "agua": -1.0,
+            "ruedas": -1.0,
+            "comestible": 1.0
+        },
+        "una maceta": {
+            "preg_6": 1.0
+        }
     },
     "preguntas": {
         "animal": "¿Es un animal?",
         "electricidad": "¿Requiere electricidad para funcionar?",
         "agua": "¿Vive principalmente en el agua?",
         "ruedas": "¿Tiene ruedas para moverse?",
-        "comestible": "¿Es algo que se cultiva para comer?"
+        "comestible": "¿Es algo que se cultiva para comer?",
+        "preg_6": "¿Es para decorar?"
     }
 }
