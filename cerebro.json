@@ -5,35 +5,95 @@
         "texto": "¿Es un animal?",
         "es_hoja": false,
         "nodo_si": {
-            "texto": "¿Ladra?",
+            "texto": "¿Vive en el agua?",
             "es_hoja": false,
             "nodo_si": {
-                "texto": "un perro",
-                "es_hoja": true,
-                "nodo_si": null,
-                "nodo_no": null
+                "texto": "¿Es un mamífero?",
+                "es_hoja": false,
+                "nodo_si": {
+                    "texto": "una ballena",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                },
+                "nodo_no": {
+                    "texto": "un tiburón",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                }
             },
             "nodo_no": {
-                "texto": "un gato",
-                "es_hoja": true,
-                "nodo_si": null,
-                "nodo_no": null
+                "texto": "¿Puede volar?",
+                "es_hoja": false,
+                "nodo_si": {
+                    "texto": "un águila",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                },
+                "nodo_no": {
+                    "texto": "¿Ladra?",
+                    "es_hoja": false,
+                    "nodo_si": {
+                        "texto": "un perro",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    },
+                    "nodo_no": {
+                        "texto": "un gato",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    }
+                }
             }
         },
         "nodo_no": {
-            "texto": "¿Es una persona famosa?",
+            "texto": "¿Es una persona?",
             "es_hoja": false,
             "nodo_si": {
-                "texto": "Albert Einstein",
-                "es_hoja": true,
-                "nodo_si": null,
-                "nodo_no": null
+                "texto": "¿Es una figura histórica del ámbito científico?",
+                "es_hoja": false,
+                "nodo_si": {
+                    "texto": "Albert Einstein",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                },
+                "nodo_no": {
+                    "texto": "¿Es un cantante famoso?",
+                    "es_hoja": false,
+                    "nodo_si": {
+                        "texto": "Michael Jackson",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    },
+                    "nodo_no": {
+                        "texto": "un actor de Hollywood",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    }
+                }
             },
             "nodo_no": {
-                "texto": "un árbol",
-                "es_hoja": true,
-                "nodo_si": null,
-                "nodo_no": null
+                "texto": "¿Da frutos que comemos?",
+                "es_hoja": false,
+                "nodo_si": {
+                    "texto": "un manzano",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                },
+                "nodo_no": {
+                    "texto": "una rosa",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                }
             }
         }
     },
@@ -41,35 +101,105 @@
         "texto": "¿Requiere electricidad para funcionar?",
         "es_hoja": false,
         "nodo_si": {
-            "texto": "¿Se usa principalmente para comunicarse?",
+            "texto": "¿Tiene una pantalla?",
             "es_hoja": false,
             "nodo_si": {
-                "texto": "un teléfono celular",
-                "es_hoja": true,
-                "nodo_si": null,
-                "nodo_no": null
+                "texto": "¿Cabe en tu bolsillo?",
+                "es_hoja": false,
+                "nodo_si": {
+                    "texto": "un teléfono celular",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                },
+                "nodo_no": {
+                    "texto": "una computadora portátil",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                }
             },
             "nodo_no": {
-                "texto": "una computadora",
-                "es_hoja": true,
-                "nodo_si": null,
-                "nodo_no": null
+                "texto": "¿Se utiliza para conservar alimentos?",
+                "es_hoja": false,
+                "nodo_si": {
+                    "texto": "un refrigerador",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                },
+                "nodo_no": {
+                    "texto": "un ventilador",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                }
             }
         },
         "nodo_no": {
-            "texto": "¿Es algo que se puede comer?",
+            "texto": "¿Se utiliza para transportarse?",
             "es_hoja": false,
             "nodo_si": {
-                "texto": "una manzana",
-                "es_hoja": true,
-                "nodo_si": null,
-                "nodo_no": null
+                "texto": "¿Tiene cuatro ruedas?",
+                "es_hoja": false,
+                "nodo_si": {
+                    "texto": "un automóvil",
+                    "es_hoja": true,
+                    "nodo_si": null,
+                    "nodo_no": null
+                },
+                "nodo_no": {
+                    "texto": "¿Vuela?",
+                    "es_hoja": false,
+                    "nodo_si": {
+                        "texto": "un avión",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    },
+                    "nodo_no": {
+                        "texto": "una bicicleta",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    }
+                }
             },
             "nodo_no": {
-                "texto": "un automóvil",
-                "es_hoja": true,
-                "nodo_si": null,
-                "nodo_no": null
+                "texto": "¿Es algo que se puede comer?",
+                "es_hoja": false,
+                "nodo_si": {
+                    "texto": "¿Es considerada comida rápida?",
+                    "es_hoja": false,
+                    "nodo_si": {
+                        "texto": "una pizza",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    },
+                    "nodo_no": {
+                        "texto": "una ensalada",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    }
+                },
+                "nodo_no": {
+                    "texto": "¿Se utiliza para escribir?",
+                    "es_hoja": false,
+                    "nodo_si": {
+                        "texto": "un bolígrafo",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    },
+                    "nodo_no": {
+                        "texto": "una silla",
+                        "es_hoja": true,
+                        "nodo_si": null,
+                        "nodo_no": null
+                    }
+                }
             }
         }
     }
