@@ -22,36 +22,65 @@ def guardar_conocimiento(datos):
     print("Memoria matricial actualizada y guardada. 💾")
 
 # ==========================================
-# CONEXIÓN A LA MATRIX (CONCEPTNET)
+# CONEXIÓN A LA MATRIX (WIKIDATA - MODO DEBUG)
 # ==========================================
-def consultar_conceptnet(palabra):
-    """Busca atributos de una palabra en Internet usando ConceptNet API."""
-    # Limpiamos la palabra para que la API la entienda mejor
-    palabra_limpia = palabra.replace("un ", "").replace("una ", "").replace("el ", "").replace("la ", "").replace(" ", "_")
-    print(f"\n🌐 [Conectando a la red global para investigar: '{palabra_limpia}']...")
+def consultar_wikidata(palabra):
+    """Busca atributos de una palabra en Internet usando la API de Wikidata."""
+    palabra_limpia = palabra.replace("un ", "").replace("una ", "").replace("el ", "").replace("la ", "")
+    print(f"\n🌐 [DEBUG] Iniciando búsqueda para: '{palabra_limpia}'")
     
-    url = f"https://api.conceptnet.io/c/es/{palabra_limpia}?limit=30"
+    url = "https://www.wikidata.org/w/api.php"
+    parametros = {
+        "action": "wbsearchentities",
+        "search": palabra_limpia,
+        "language": "es",
+        "uselang": "es",
+        "strictlanguage": "1",
+        "format": "json"
+    }
+    
+    # TARJETA DE IDENTIFICACIÓN
+    cabeceras = {
+        "User-Agent": "MotorIA_Portafolio/1.0 (aprendiendo_python@developer.com)"
+    }
     
     try:
-        respuesta = requests.get(url, timeout=5)
+        respuesta = requests.get(url, params=parametros, headers=cabeceras, timeout=5)
+        
+        print(f"🔗 [DEBUG] URL generada: {respuesta.url}")
+        print(f"📡 [DEBUG] Estado HTTP: {respuesta.status_code}")
+        
         if respuesta.status_code == 200:
             datos = respuesta.json()
+            resultados = datos.get('search', [])
             
-            for edge in datos.get('edges', []):
-                relacion = edge['rel']['label']
-                destino = edge['end']['label']
-                idioma_destino = edge['end'].get('language', '')
+            if not resultados:
+                print("❌ [DEBUG] Wikidata devolvió una lista vacía. No existe la palabra.")
+                return None
                 
-                if idioma_destino == 'es':
-                    # Transformamos la relación de la API en una pregunta humana
-                    if relacion == "IsA": return f"¿Es un/una {destino}?"
-                    elif relacion == "CapableOf": return f"¿Es capaz de {destino}?"
-                    elif relacion == "HasA": return f"¿Tiene {destino}?"
-                    elif relacion == "UsedFor": return f"¿Se usa para {destino}?"
-                    elif relacion == "AtLocation": return f"¿Suele encontrarse en {destino}?"
-        return None # No encontró relaciones útiles en español
-    except requests.RequestException:
-        print("⚠️ [Error de conexión: La Matrix está caída o inaccesible]")
+            print(f"✅ [DEBUG] Se encontraron {len(resultados)} posibles coincidencias.")
+            
+            primer_resultado = resultados[0]
+            descripcion = primer_resultado.get('description')
+            
+            print(f"📄 [DEBUG] Descripción extraída: '{descripcion}'")
+            
+            if descripcion:
+                if "Wikimedia" in descripcion or "Wikipedia" in descripcion:
+                    print("❌ [DEBUG] Es una página de desambiguación. No sirve para jugar.")
+                else:
+                    print("✨ [DEBUG] ¡Descripción válida encontrada!")
+                    return f"¿Es un/una {descripcion}?"
+            else:
+                print("❌ [DEBUG] El objeto existe, pero no tiene una descripción redactada.")
+                
+            return None
+        else:
+            print(f"❌ [DEBUG] Error del servidor de Wikidata: {respuesta.text}")
+            return None
+            
+    except requests.RequestException as e:
+        print(f"⚠️ [DEBUG] Error crítico de red: {e}")
         return None
 
 # ==========================================
@@ -126,9 +155,9 @@ def jugar():
         id_nueva_preg = None
         
         # --- PLAN A: INTERNET ---
-        pregunta_internet = consultar_conceptnet(nuevo_obj)
+        pregunta_internet = consultar_wikidata(nuevo_obj)
         if pregunta_internet:
-            print(f"💡 [PLAN A] ConceptNet sugiere: '{pregunta_internet}'")
+            print(f"💡 [PLAN A] Wikidata sugiere: '{pregunta_internet}'")
             if input("¿Es correcta esta pregunta para distinguirlos? (s/n): ").lower().strip() == 's':
                 nueva_preg_texto = pregunta_internet
                 id_nueva_preg = f"preg_{len(preguntas) + 1}"

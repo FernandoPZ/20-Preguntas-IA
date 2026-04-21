@@ -1,7 +1,7 @@
 {
     "objetos": {
         "un perro": {
-            "preg_1": 1.0,
+            "preg_1": -1.0,
             "preg_2": -1.0,
             "preg_3": -1.0,
             "preg_4": 1.0,
@@ -19,7 +19,8 @@
             "preg_2": -1.0,
             "preg_3": -1.0,
             "preg_4": -1.0,
-            "preg_5": -1.0
+            "preg_5": -1.0,
+            "preg_9": -1.0
         },
         "un telefono": {
             "preg_1": -1.0,
@@ -69,6 +70,15 @@
         },
         "autobus": {
             "preg_4": 1.0
+        },
+        "toro": {
+            "preg_1": 1.0
+        },
+        "mesa": {
+            "preg_1": -1.0
+        },
+        "vaso": {
+            "preg_9": 1.0
         }
     },
     "preguntas": {
@@ -79,6 +89,7 @@
         "preg_5": "¿Es algo que se puede comer?",
         "preg_6": "¿Puede volar?",
         "preg_7": "¿Es considerada comida rapida?",
-        "preg_8": "¿Tiene muchos dientes afilados?"
+        "preg_8": "¿Tiene muchos dientes afilados?",
+        "preg_9": "¿Es un recipiente ornamental?"
     }
 }
