@@ -1,51 +1,84 @@
 {
     "objetos": {
         "un perro": {
-            "animal": 1.0,
-            "electricidad": -1.0,
-            "agua": -1.0,
-            "ruedas": -1.0,
-            "comestible": -1.0,
-            "preg_6": -1.0
+            "preg_1": 1.0,
+            "preg_2": -1.0,
+            "preg_3": -1.0,
+            "preg_4": 1.0,
+            "preg_5": -1.0
         },
         "una ballena": {
-            "animal": 1.0,
-            "electricidad": -1.0,
-            "agua": 1.0,
-            "ruedas": -1.0,
-            "comestible": -1.0
+            "preg_1": 1.0,
+            "preg_2": -1.0,
+            "preg_3": 1.0,
+            "preg_4": -1.0,
+            "preg_5": -1.0
         },
         "un automovil": {
-            "animal": -1.0,
-            "electricidad": -1.0,
-            "agua": -1.0,
-            "ruedas": 1.0,
-            "comestible": -1.0
+            "preg_1": -1.0,
+            "preg_2": -1.0,
+            "preg_3": -1.0,
+            "preg_4": -1.0,
+            "preg_5": -1.0
         },
         "un telefono": {
-            "animal": -1.0,
-            "electricidad": 1.0,
-            "agua": -1.0,
-            "ruedas": -1.0,
-            "comestible": -1.0
+            "preg_1": -1.0,
+            "preg_2": 1.0,
+            "preg_3": -1.0,
+            "preg_4": -1.0,
+            "preg_5": -1.0
         },
         "una manzana": {
-            "animal": -1.0,
-            "electricidad": -1.0,
-            "agua": -1.0,
-            "ruedas": -1.0,
-            "comestible": 1.0
+            "preg_1": -1.0,
+            "preg_2": -1.0,
+            "preg_3": -1.0,
+            "preg_4": -1.0,
+            "preg_5": 1.0
         },
-        "una maceta": {
+        "un avion": {
+            "preg_1": -1.0,
+            "preg_2": -1.0,
+            "preg_3": -1.0,
+            "preg_4": -1.0,
+            "preg_5": -1.0,
             "preg_6": 1.0
+        },
+        "una pizza": {
+            "preg_1": -1.0,
+            "preg_2": -1.0,
+            "preg_3": -1.0,
+            "preg_4": -1.0,
+            "preg_5": 1.0,
+            "preg_7": 1.0
+        },
+        "un tiburon": {
+            "preg_1": 1.0,
+            "preg_2": -1.0,
+            "preg_3": 1.0,
+            "preg_4": -1.0,
+            "preg_5": -1.0,
+            "preg_8": 1.0
+        },
+        "gato": {
+            "preg_5": -1.0,
+            "preg_2": -1.0,
+            "preg_3": -1.0
+        },
+        "caballo": {
+            "preg_3": -1.0
+        },
+        "autobus": {
+            "preg_4": 1.0
         }
     },
     "preguntas": {
-        "animal": "¿Es un animal?",
-        "electricidad": "¿Requiere electricidad para funcionar?",
-        "agua": "¿Vive principalmente en el agua?",
-        "ruedas": "¿Tiene ruedas para moverse?",
-        "comestible": "¿Es algo que se cultiva para comer?",
-        "preg_6": "¿Es para decorar?"
+        "preg_1": "¿Es un animal?",
+        "preg_2": "¿Requiere electricidad para funcionar?",
+        "preg_3": "¿Vive principalmente en el agua?",
+        "preg_4": "¿Tiene 4 patas o ruedas?",
+        "preg_5": "¿Es algo que se puede comer?",
+        "preg_6": "¿Puede volar?",
+        "preg_7": "¿Es considerada comida rapida?",
+        "preg_8": "¿Tiene muchos dientes afilados?"
     }
 }
