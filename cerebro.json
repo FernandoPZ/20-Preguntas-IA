@@ -79,6 +79,61 @@
         },
         "vaso": {
             "preg_9": 1.0
+        },
+        "un/una elefante": {
+            "preg_10": 1.0
+        },
+        "un/una microondas": {
+            "preg_11": 1.0
+        },
+        "un/una motocicleta": {
+            "preg_12": 1.0
+        },
+        "un/una satelite": {
+            "preg_13": 1.0
+        },
+        "un/una pingüino": {
+            "preg_14": 1.0
+        },
+        "un/una hamburguesa": {
+            "preg_15": 1.0
+        },
+        "un/una leon": {
+            "preg_16": 1.0,
+            "preg_1": 1.0,
+            "preg_2": -1.0,
+            "preg_3": -1.0,
+            "preg_4": 1.0,
+            "preg_5": -1.0,
+            "preg_6": -1.0,
+            "preg_7": -1.0,
+            "preg_8": 1.0,
+            "preg_9": -1.0,
+            "preg_10": 1.0,
+            "preg_11": -1.0,
+            "preg_12": -1.0,
+            "preg_13": -1.0,
+            "preg_14": -1.0,
+            "preg_15": -1.0
+        },
+        "un/una computadora": {
+            "preg_17": 1.0,
+            "preg_1": -1.0,
+            "preg_2": 1.0,
+            "preg_3": -1.0,
+            "preg_4": -1.0,
+            "preg_5": -1.0,
+            "preg_6": -1.0,
+            "preg_7": -1.0,
+            "preg_8": -1.0,
+            "preg_9": -1.0,
+            "preg_10": -1.0,
+            "preg_11": -1.0,
+            "preg_12": -1.0,
+            "preg_13": -1.0,
+            "preg_14": -1.0,
+            "preg_15": -1.0,
+            "preg_16": -1.0
         }
     },
     "preguntas": {
@@ -90,6 +145,14 @@
         "preg_6": "¿Puede volar?",
         "preg_7": "¿Es considerada comida rapida?",
         "preg_8": "¿Tiene muchos dientes afilados?",
-        "preg_9": "¿Es un recipiente ornamental?"
+        "preg_9": "¿Es un recipiente ornamental?",
+        "preg_10": "¿Es un/una mamífero?",
+        "preg_11": "¿Es un/una forma de radiación electromagnética?",
+        "preg_12": "¿Es un/una vehículo motorizado de dos ruedas y de una sola vía?",
+        "preg_13": "¿Es un/una satélite natural de la Tierra?",
+        "preg_14": "¿Es un/una familia de aves?",
+        "preg_15": "¿Es un/una plato culinario compuesto por carne de ternera entre panecillos redondeados?",
+        "preg_16": "¿Es un/una especie de mamíferos?",
+        "preg_17": "¿Es un/una dispositivo de propósito general simple para realizar operaciones aritméticas o lógicas?"
     }
 }

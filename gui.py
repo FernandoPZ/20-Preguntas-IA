@@ -1,153 +1,202 @@
 import customtkinter as ctk
-import motor_ia
+import json
+import os
+import requests
+import random
 
-# Configuración visual base
-ctk.set_appearance_mode("Dark")
+# Configuración del tema visual
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("green")
 
-class OraculoApp(ctk.CTk):
+class IA20Preguntas(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Oráculo IA - 20 Preguntas")
-        self.geometry("600x450")
-        self.minsize(500, 400)
+        self.geometry("700x450")
+        self.resizable(False, False)
         
-        # 1. Cargamos el cerebro arbol.py
-        self.cerebro_raiz = motor_ia.cargar_conocimiento()
-        self.nodo_actual = self.cerebro_raiz
+        # Carga de la Matrix
+        self.archivo_cerebro = "cerebro.json"
+        self.datos = self.cargar_datos()
+        self.objetos = self.datos.get("objetos", {})
+        self.preguntas = self.datos.get("preguntas", {})
         
-        # Variables temporales para cuando la IA aprende
-        self.nuevo_elemento = ""
-        self.nueva_pregunta = ""
-        self.fase = "navegar" # Fases: navegar, adivinar, aprender_elemento, aprender_pregunta, aprender_respuesta, fin
+        # Variables del motor
+        self.puntajes = {}
+        self.preguntas_hechas = 0
+        self.limite = 20
+        self.preguntas_pendientes = []
+        self.mejor_opcion = ""
         
-        self.construir_ui()
-        self.actualizar_pantalla()
+        self.construir_interfaz()
+        self.reiniciar_juego()
 
-    def construir_ui(self):
-        # --- Encabezado ---
-        self.lbl_titulo = ctk.CTkLabel(self, text="🧠 Lector de Mentes IA", font=("Arial", 28, "bold"))
-        self.lbl_titulo.pack(pady=(30, 10))
-        
-        # --- Pantalla Principal (El "rostro" de la IA) ---
-        self.frame_pantalla = ctk.CTkFrame(self, fg_color="#1a1a1a", corner_radius=15)
-        self.frame_pantalla.pack(fill="both", expand=True, padx=40, pady=20)
-        
-        self.lbl_mensaje = ctk.CTkLabel(self.frame_pantalla, text="", font=("Arial", 20), wraplength=450)
-        self.lbl_mensaje.pack(expand=True, pady=20)
-        
-        # --- Controles (Botones Sí/No) ---
-        self.frame_botones = ctk.CTkFrame(self, fg_color="transparent")
-        self.btn_si = ctk.CTkButton(self.frame_botones, text="SÍ", command=lambda: self.procesar_respuesta("s"), 
-                                    fg_color="#28C76F", hover_color="#21A05A", font=("Arial", 16, "bold"), width=120, height=40)
-        self.btn_si.pack(side="left", padx=20)
-        
-        self.btn_no = ctk.CTkButton(self.frame_botones, text="NO", command=lambda: self.procesar_respuesta("n"), 
-                                    fg_color="#FF4C4C", hover_color="#CC3D3D", font=("Arial", 16, "bold"), width=120, height=40)
-        self.btn_no.pack(side="right", padx=20)
-        
-        # --- Controles (Entrada de Texto para Aprender) ---
-        self.frame_input = ctk.CTkFrame(self, fg_color="transparent")
-        self.entrada_texto = ctk.CTkEntry(self.frame_input, width=300, height=40, font=("Arial", 16))
-        self.entrada_texto.pack(side="left", padx=(0, 10))
-        # Vinculamos la tecla 'Enter' para mayor comodidad
-        self.entrada_texto.bind("<Return>", lambda e: self.procesar_texto())
-        
-        self.btn_enviar = ctk.CTkButton(self.frame_input, text="Enviar", command=self.procesar_texto, height=40)
-        self.btn_enviar.pack(side="left")
-        
-        # --- Botón de Reinicio ---
-        self.btn_reiniciar = ctk.CTkButton(self, text="Jugar de Nuevo", command=self.reiniciar_juego, height=40)
+    def cargar_datos(self):
+        if os.path.exists(self.archivo_cerebro):
+            with open(self.archivo_cerebro, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {"objetos": {}, "preguntas": {}}
 
-    # LÓGICA DE LA MÁQUINA DE ESTADOS
-    def actualizar_pantalla(self):
-        """Muestra u oculta controles dependiendo de la fase en la que estemos."""
-        self.frame_botones.pack_forget()
-        self.frame_input.pack_forget()
-        self.btn_reiniciar.pack_forget()
-        self.entrada_texto.delete(0, 'end')
+    def guardar_datos(self):
+        with open(self.archivo_cerebro, 'w', encoding='utf-8') as f:
+            json.dump(self.datos, f, ensure_ascii=False, indent=4)
 
-        if self.fase == "navegar":
-            self.lbl_mensaje.configure(text=self.nodo_actual.texto)
-            self.frame_botones.pack(pady=(0, 30))
-            
-        elif self.fase == "adivinar":
-            self.lbl_mensaje.configure(text=f"¿Estás pensando en {self.nodo_actual.texto}?")
-            self.frame_botones.pack(pady=(0, 30))
-            
-        elif self.fase == "aprender_elemento":
-            self.lbl_mensaje.configure(text="¡Me ganaste! ¿En qué estabas pensando?\n(Ejemplo: un gato)")
-            self.frame_input.pack(pady=(0, 30))
-            self.entrada_texto.focus()
-            
-        elif self.fase == "aprender_pregunta":
-            self.lbl_mensaje.configure(text=f"Escribe una pregunta para distinguir:\n'{self.nuevo_elemento}' de '{self.nodo_actual.texto}'")
-            self.frame_input.pack(pady=(0, 30))
-            self.entrada_texto.focus()
-            
-        elif self.fase == "aprender_respuesta":
-            self.lbl_mensaje.configure(text=f"Para '{self.nuevo_elemento}',\n¿la respuesta a tu pregunta es SÍ o NO?")
-            self.frame_botones.pack(pady=(0, 30))
-            
-        elif self.fase == "fin":
-            self.btn_reiniciar.pack(pady=(0, 30))
-
-    def procesar_respuesta(self, respuesta):
-        if self.fase == "navegar":
-            self.nodo_actual = self.nodo_actual.nodo_si if respuesta == "s" else self.nodo_actual.nodo_no
-            if self.nodo_actual.es_hoja:
-                self.fase = "adivinar"
-            self.actualizar_pantalla()
-            
-        elif self.fase == "adivinar":
-            if respuesta == "s":
-                self.lbl_mensaje.configure(text="¡Jaja! ¡La Inteligencia Artificial gana de nuevo! 🤖🏆")
-                self.fase = "fin"
-            else:
-                self.fase = "aprender_elemento"
-            self.actualizar_pantalla()
-            
-        elif self.fase == "aprender_respuesta":
-            # 1. Transformamos la hoja en una nueva pregunta
-            viejo_texto = self.nodo_actual.texto
-            self.nodo_actual.texto = self.nueva_pregunta
-            self.nodo_actual.es_hoja = False
-            
-            # 2. Conectamos las hojas nuevas
-            if respuesta == 's':
-                self.nodo_actual.nodo_si = motor_ia.Nodo(self.nuevo_elemento, es_hoja=True)
-                self.nodo_actual.nodo_no = motor_ia.Nodo(viejo_texto, es_hoja=True)
-            else:
-                self.nodo_actual.nodo_no = motor_ia.Nodo(self.nuevo_elemento, es_hoja=True)
-                self.nodo_actual.nodo_si = motor_ia.Nodo(viejo_texto, es_hoja=True)
-                
-            # 3. Usamos la función de arbol.py para guardar
-            motor_ia.guardar_conocimiento(self.cerebro_raiz)
-            self.lbl_mensaje.configure(text="¡Gracias! He expandido mi conocimiento. 🧠✨\n(Memoria guardada en el disco)")
-            self.fase = "fin"
-            self.actualizar_pantalla()
-
-    def procesar_texto(self):
-        texto = self.entrada_texto.get().strip().lower()
-        if not texto: return
+    def construir_interfaz(self):
+        # Etiqueta superior (Contador)
+        self.lbl_estado = ctk.CTkLabel(self, text="Inicializando...", font=("Roboto", 14), text_color="gray")
+        self.lbl_estado.pack(pady=(30, 5))
         
-        if self.fase == "aprender_elemento":
-            self.nuevo_elemento = texto
-            self.fase = "aprender_pregunta"
-            self.actualizar_pantalla()
-            
-        elif self.fase == "aprender_pregunta":
-            # Autocorrección estética rápida
-            if not texto.startswith("¿"): texto = "¿" + texto
-            if not texto.endswith("?"): texto = texto + "?"
-            self.nueva_pregunta = texto
-            self.fase = "aprender_respuesta"
-            self.actualizar_pantalla()
+        # Etiqueta principal (Pregunta)
+        self.lbl_pregunta = ctk.CTkLabel(self, text="", font=("Roboto", 26, "bold"), wraplength=600)
+        self.lbl_pregunta.pack(pady=(20, 40), expand=True)
+        
+        # Zona de botones: Fase de Juego
+        self.frame_juego = ctk.CTkFrame(self, fg_color="transparent")
+        
+        self.btn_si = ctk.CTkButton(self.frame_juego, text="SÍ", width=130, height=45, font=("Roboto", 16, "bold"), fg_color="#28C76F", hover_color="#22a85e", command=lambda: self.responder('s'))
+        self.btn_si.pack(side="left", padx=15)
+        
+        self.btn_talvez = ctk.CTkButton(self.frame_juego, text="TAL VEZ", width=130, height=45, font=("Roboto", 16, "bold"), fg_color="#555555", hover_color="#444444", command=lambda: self.responder('t'))
+        self.btn_talvez.pack(side="left", padx=15)
+        
+        self.btn_no = ctk.CTkButton(self.frame_juego, text="NO", width=130, height=45, font=("Roboto", 16, "bold"), fg_color="#EA5455", hover_color="#ce4a4a", command=lambda: self.responder('n'))
+        self.btn_no.pack(side="left", padx=15)
+        
+        # Zona de botones: Fase de Adivinación
+        self.frame_adivinar = ctk.CTkFrame(self, fg_color="transparent")
+        self.btn_correcto = ctk.CTkButton(self.frame_adivinar, text="¡SÍ, ACERTASTE!", width=200, height=45, font=("Roboto", 16, "bold"), fg_color="#28C76F", hover_color="#22a85e", command=self.victoria_ia)
+        self.btn_correcto.pack(side="left", padx=15)
+        self.btn_incorrecto = ctk.CTkButton(self.frame_adivinar, text="NO, TE EQUIVOCASTE", width=200, height=45, font=("Roboto", 16, "bold"), fg_color="#EA5455", hover_color="#ce4a4a", command=self.derrota_ia)
+        self.btn_incorrecto.pack(side="left", padx=15)
+
+        # Botón de Reinicio
+        self.btn_reiniciar = ctk.CTkButton(self, text="JUGAR DE NUEVO", width=200, height=45, font=("Roboto", 16, "bold"), command=self.reiniciar_juego)
 
     def reiniciar_juego(self):
-        self.nodo_actual = self.cerebro_raiz
-        self.fase = "navegar"
-        self.actualizar_pantalla()
+        if not self.objetos or not self.preguntas:
+            self.lbl_pregunta.configure(text="El cerebro.json no está listo.")
+            return
+            
+        self.puntajes = {nombre: 0.0 for nombre in self.objetos.keys()}
+        self.preguntas_pendientes = list(self.preguntas.items())
+        random.shuffle(self.preguntas_pendientes)
+        self.preguntas_hechas = 0
+        
+        self.btn_reiniciar.pack_forget()
+        self.frame_adivinar.pack_forget()
+        self.frame_juego.pack(pady=20)
+        
+        self.mostrar_siguiente_pregunta()
+
+    def mostrar_siguiente_pregunta(self):
+        # Sensor de finalización
+        if self.preguntas_hechas >= self.limite or not self.preguntas_pendientes:
+            self.hacer_adivinanza()
+            return
+            
+        self.pregunta_actual_id, self.pregunta_actual_texto = self.preguntas_pendientes.pop(0)
+        self.lbl_estado.configure(text=f"Pregunta {self.preguntas_hechas + 1} de {self.limite}")
+        self.lbl_pregunta.configure(text=self.pregunta_actual_texto)
+
+    def responder(self, resp):
+        self.preguntas_hechas += 1
+        
+        # Ajuste de matriz de pesos
+        for obj_nombre, atributos in self.objetos.items():
+            peso = atributos.get(self.pregunta_actual_id, 0.0)
+            if resp == 's': self.puntajes[obj_nombre] += peso
+            elif resp == 'n': self.puntajes[obj_nombre] -= peso
+            
+        # Umbral de confianza (Early Stopping)
+        ranking = sorted(self.puntajes.items(), key=lambda x: x[1], reverse=True)
+        if len(ranking) >= 2:
+            if (ranking[0][1] - ranking[1][1]) >= 2.0:
+                self.hacer_adivinanza()
+                return
+                
+        self.mostrar_siguiente_pregunta()
+
+    def hacer_adivinanza(self):
+        ranking = sorted(self.puntajes.items(), key=lambda x: x[1], reverse=True)
+        self.mejor_opcion = ranking[0][0]
+        
+        self.lbl_estado.configure(text="¡Análisis completado!")
+        self.lbl_pregunta.configure(text=f"¿Estás pensando en\n{self.mejor_opcion.upper()}?")
+        
+        self.frame_juego.pack_forget()
+        self.frame_adivinar.pack(pady=20)
+
+    def victoria_ia(self):
+        self.lbl_estado.configure(text="Fin del juego")
+        self.lbl_pregunta.configure(text="¡La probabilidad matemática nunca falla! 🤖🏆")
+        self.frame_adivinar.pack_forget()
+        self.btn_reiniciar.pack(pady=20)
+
+    def derrota_ia(self):
+        self.frame_adivinar.pack_forget()
+        self.lbl_estado.configure(text="Aprendiendo de la Matrix...")
+        self.lbl_pregunta.configure(text="¡Vaya! La entropía me ha superado.\nPermíteme investigar...")
+        self.update() 
+        
+        dialogo = ctk.CTkInputDialog(text="¿En qué estabas pensando? (ej: guitarra, barco):", title="Auto-Entrenamiento")
+        nuevo_obj = dialogo.get_input()
+        
+        if nuevo_obj:
+            self.aprender_nuevo_objeto(nuevo_obj.lower().strip())
+        else:
+            self.btn_reiniciar.pack(pady=20)
+
+    def aprender_nuevo_objeto(self, nuevo_obj):
+        if nuevo_obj not in self.objetos:
+            self.objetos[nuevo_obj] = {}
+            
+        # PLAN A: Conexión a Wikidata
+        pregunta_api = self.consultar_wikidata(nuevo_obj)
+        
+        if pregunta_api:
+            id_nueva = f"preg_{len(self.preguntas) + 1}"
+            self.preguntas[id_nueva] = pregunta_api
+            self.objetos[nuevo_obj][id_nueva] = 1.0
+            self.objetos[self.mejor_opcion][id_nueva] = -1.0
+            self.guardar_datos()
+            
+            self.lbl_estado.configure(text="Red Neuronal Actualizada")
+            self.lbl_pregunta.configure(text=f"¡Wikidata me ha enseñado algo nuevo!\nHe agregado la regla: {pregunta_api}")
+        else:
+            # PLAN C: Intervención Manual
+            dialogo = ctk.CTkInputDialog(text=f"Escribe una pregunta de Sí/No que sea VERDADERA para '{nuevo_obj}' pero FALSA para '{self.mejor_opcion}':", title="Modo Manual")
+            pregunta_manual = dialogo.get_input()
+            
+            if pregunta_manual:
+                id_nueva = f"preg_{len(self.preguntas) + 1}"
+                self.preguntas[id_nueva] = pregunta_manual
+                self.objetos[nuevo_obj][id_nueva] = 1.0
+                self.objetos[self.mejor_opcion][id_nueva] = -1.0
+                self.guardar_datos()
+                
+                self.lbl_estado.configure(text="Red Neuronal Actualizada")
+                self.lbl_pregunta.configure(text="¡Conocimiento matricial expandido gracias a ti! 🧠✨")
+        
+        self.btn_reiniciar.pack(pady=20)
+
+    def consultar_wikidata(self, palabra):
+        palabra_limpia = palabra.replace("un ", "").replace("una ", "").replace("el ", "").replace("la ", "")
+        url = "https://www.wikidata.org/w/api.php"
+        parametros = {"action": "wbsearchentities", "search": palabra_limpia, "language": "es", "uselang": "es", "strictlanguage": "1", "format": "json"}
+        cabeceras = {"User-Agent": "GUI_Portafolio_Game/1.0"}
+        
+        try:
+            r = requests.get(url, params=parametros, headers=cabeceras, timeout=4)
+            if r.status_code == 200:
+                resultados = r.json().get('search', [])
+                if resultados:
+                    desc = resultados[0].get('description')
+                    if desc and "Wikimedia" not in desc and "Wikipedia" not in desc:
+                        return f"¿Es un/una {desc}?"
+        except:
+            pass
+        return None
 
 if __name__ == "__main__":
-    app = OraculoApp()
+    app = IA20Preguntas()
     app.mainloop()
